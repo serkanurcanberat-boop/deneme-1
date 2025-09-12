@@ -1,33 +1,280 @@
-
-
-<html>
+```html
+<!DOCTYPE html>
+<html lang="tr">
 <head>
-  <style>
-    body {
-      background-color: black;
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>TR Haber - Kayıt & Yorum Sistemi</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #121212;
+    color: #eee;
+    margin: 0; padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  header {
+    background-color: #c62828;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  header h1 {
+    margin: 0;
+    font-size: 24px;
+  }
+  header button {
+    background-color: #fff;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #c62828;
+    transition: background-color 0.3s ease;
+  }
+  header button:hover {
+    background-color: #fddede;
+  }
+  main {
+    flex: 1;
+    padding: 20px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  /* Kayıt formu */
+  #kayitForm {
+    background-color: #1e1e1e;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+  }
+  #kayitForm h2 {
+    margin-top: 0;
+    color: #ff7961;
+  }
+  #kayitForm input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0 15px 0;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+  #kayitForm button {
+    background-color: #c62828;
+    color: white;
+    font-size: 16px;
+    padding: 10px;
+    width: 100%;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  #kayitForm button:hover {
+    background-color: #a52020;
+  }
+  /* Yorumlar bölümü */
+  #yorumlar {
+    background-color: #1e1e1e;
+    padding: 20px;
+    border-radius: 8px;
+  }
+  #yorumlar h2 {
+    color: #ff7961;
+  }
+  .yorum {
+    background-color: #2a2a2a;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+  }
+  .yorum strong {
+    color: #fff;
+  }
+  /* Yorum ekleme */
+  #yorumEkleForm {
+    margin-top: 20px;
+  }
+  #yorumEkleForm textarea {
+    width: 100%;
+    height: 70px;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    font-size: 14px;
+    resize: vertical;
+  }
+  #yorumEkleForm button {
+    margin-top: 10px;
+    background-color: #c62828;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    width: 100%;
+    cursor: pointer;
 
-    .cerceve {
-      border: 1px solid white;
-      padding: 20px;
-      text-align: center;
-    }
-  </style>
+font-size: 16px;
+  }
+  #yorumEkleForm button:hover {
+    background-color: #a52020;
+  }
+  /* Ortalamalar */
+  .centered {
+    text-align: center;
+  }
+</style>
 </head>
 <body>
 
-  <div class="cerceve">
-    <h1>WLCOME TO</h1>
-    <p>MY WEBSİTE :D</p>
-  </div>
+<header>
+  <h1>TR HABER</h1>
+  <button id="btnToggleKayit">Kayıt Ol / Giriş Yap</button>
+</header>
+
+<main>
+
+  <section id="kayitSection" style="display:none;"
+
+     <form id="kayitForm">
+      <h2>Kayıt Ol / Giriş Yap</h2>
+      <input type="text" id="username" placeholder="Kullanıcı Adı" required minlength="3" />
+      <input type="password" id="password" placeholder="Şifre" required minlength="5" />
+      <button type="submit">Gönder</button>
+    </form>
+  </section>
+
+  <section id="hosgeldin" class="centered" style="display:none;">
+    <h2>Hoşgeldin, <span id="kullaniciAdiGoster"></span>!</h2>
+    <button id="btnCikis">Çıkış Yap</button>
+  </section>
+
+  <section id="yorumlar">
+    <h2>Yorumlar</h2>
+    <div id="yorumListesi">
+      <p>Henüz yorum yok, sen ilk yorum yapan ol!</p>
+    </div>
+
+    <form id="yorumEkleForm" style="display:none;">
+      <textarea id="yorumInput" placeholder="Yorumunu yaz..."></textarea>
+      <button type="submit">Yorum Ekle</button>
+    </form>
+  </section>
+
+</main>
+
+<script>
+  const btnToggleKayit = document.getElementById('btnToggleKayit');
+  const kayitSection = document.getElementById('kayitSection');
+  const hosgeldinSection = document.getElementById('hosgeldin');
+  const kullaniciAdiGoster = document.getElementById('kullaniciAdiGoster');
+  const kayitForm = document.getElementById('kayitForm');
+  const btnCikis = document.getElementById('btnCikis');
+  const yorumEkleForm = document.getElementById('yorumEkleForm');
+  const yorumListesi = document.getElementById('yorumListesi');
+  const yorumInput = document.getElementById('yorumInput');
+
+  // LocalStorage'dan kullanıcı kontrolü
+  let kullanici = localStorage.getItem('kullanici');
+
+  function showLogin(show) {
+    kayitSection.style.display = show ? 'block' : 'none';
+  }
+  function showHosgeldin(show) {
+    hosgeldinSection.style.display = show ? 'block' : 'none';
+    yorumEkleForm.style.display = show ? 'block' : 'none';
+  }
+
+  function yorumlariGoster() {
+    let yorumlar = JSON.parse(localStorage.getItem('yorumlar')) || [];
+    yorumListesi.innerHTML = '';
+
+    if(yorumlar.length === 0){
+      yorumListesi.innerHTML = '<p>Henüz yorum yok, sen ilk yorum yapan ol!</p>';
+    } else {
+      yorumlar.forEach(item => {
+        const div = document.createElement('div');
+        div.classList.add('yorum');
+
+div.innerHTML = <strong>item.kullanici:</strong> <br>{item.yorum};
+        yorumListesi.appendChild(div);
+      });
+    }
+  }
+
+  // İlk kontrol: kullanıcı var mı?
+  if (kullanici) {
+    kullaniciAdiGoster.textContent = kullanici;
+    showHosgeldin(true);
+  } else {
+    showLogin(false);
+    showHosgeldin(false);
+  }
+
+  btnToggleKayit.addEventListener('click', () => {
+    if (kayitSection.style.display === 'block') {
+      showLogin(false);
+    } else {
+      showLogin(true);
+         }
+  });
+
+  kayitForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+
+    if (username.length < 3 || password.length < 5) {
+      alert('Kullanıcı adı en az 3, şifre en az 5 karakter olmalı.');
+      return;
+    }
+
+    // Basit kullanıcı kaydı / giriş (yerel depolama)
+    localStorage.setItem('kullanici', username);
+    kullanici = username;
+    kullaniciAdiGoster.textContent = kullanici;
+    showLogin(false);
+    showHosgeldin(true);
+    yorumlariGoster();
+  });
+
+  btnCikis.addEventListener('click', () => {
+    localStorage.removeItem('kullanici');
+    kullanici = null;
+    showHosgeldin(false);
+  });
+
+yorumEkleForm.addEventListener('submit', e => {
+    e.preventDefault();
+    if (!kullanici) {
+      alert('Lütfen önce kayıt olun.');
+      return;
+    }
+
+    const yorumText = yorumInput.value.trim();
+    if (yorumText.length === 0) {
+      alert('Yorum boş olamaz.');
+      return;
+    }
+
+    // Yorumları kaydet ve göster
+    let yorumlar = JSON.parse(localStorage.getItem('yorumlar')) || [];
+    yorumlar.push({ kullanici: kullanici, yorum: yorumText });
+    localStorage.setItem('yorumlar', JSON.stringify(yorumlar));
+
+    yorumInput.value = '';
+    yorumlariGoster();
+    });
+
+  yorumlariGoster();
+</script>
 
 </body>
 </html>
+```
 
-
+---
