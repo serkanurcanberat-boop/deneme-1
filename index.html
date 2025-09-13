@@ -1,259 +1,39 @@
 ```html
 <!DOCTYPE html>
-<html>
-<head>
-  <title>TR HABER</title>
-  <style>
-    body {
-      background-color: #121212;
-      color: white;
-      font-family: Arial;
-      margin: 0;
-      padding: 0;
-    }
-
-    .ust-serit {
-      background-color: #e53935;
-      padding: 15px;
-      text-align: center;
-      font-size: 24px;
-      font-weight: bold;
-      position: relative;
-    }
-
-    .kutu {
-      background-color: #1e1e1e;
-      border: 1px solid white;
-      padding: 20px;
-      margin: 30px auto;
-      width: 80%;
-      max-width: 600px;
-      border-radius: 8px;
-    }
-
-    input, textarea {
-      width: 100%;
-      margin: 10px 0;
-      padding: 10px;
-      border: none;
-      border-radius: 5px;
-    }
-
-    button {
-      padding: 10px 20px;
-      background-color: #e53935;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    .yorum {
-      margin-top: 10px;
-      border-top: 1px solid gray;
-      padding-top: 10px;
-    }
-
-    .kayıt-btn {
-
-position: absolute;
-      right: 20px;
-      top: 15px;
-    }
-  </style>
-</head>
-<body>
-
-  <div class="ust-serit">
-    TR HABER
-    <button class="kayıt-btn" onclick="gosterKayit()">Kayıt Ol / Giriş Yap</button>
-  </div>
-
-  <div class="kutu" id="kayitKutusu" style="display:none;">
-    <h2>Kayıt Ol</h2>
-    <input type="text" placeholder="Kullanıcı Adı" id="kadi">
-    <input type="password" placeholder="Şifre" id="sifre">
-    <button onclick="kayitOl()">Kaydol</button>
-  </div>
-
-  <div class="kutu">
-    <h2>Yorum Yap</h2>
-    <textarea id="yorumMetni" placeholder="Yorumunuzu yazın..."></textarea>
-    <button onclick="yorumEkle()">Gönder</button>
-    <div id="yorumlar">
-      <p>Henüz yorum yok, sen ilk yorum yapan ol!</p>
-    </div>
-  </div>
-
-  <script>
-    function gosterKayit() {
-      let kutu = document.getElementById("kayitKutusu");
-      kutu.style.display = (kutu.style.display === "none") ? "block" : "none";
-    }
-
-    function kayitOl() {
-      let kadi = document.getElementById("kadi").value;
-      let sifre = document.getElementById("sifre").value;
-      if (kadi && sifre) {
-        alert("Kaydoldun, hoş geldin " + kadi + "!");
-      } else {
-        alert("Lütfen tüm alanları doldur.");
-      }
-    }
-
-    function yorumEkle() {
-
-let yorumMetni = document.getElementById("yorumMetni").value.trim();
-      if (yorumMetni === "") return;
-      let yorumlar = document.getElementById("yorumlar");
-
-      // İlk yorum mesajını sil
-      if (yorumlar.children[0].tagName === "P") {
-        yorumlar.innerHTML = "";
-      }
-
-      let yeniYorum = document.createElement("div");
-      yeniYorum.className = "yorum";
-      yeniYorum.innerText = yorumMetni;
-      yorumlar.appendChild(yeniYorum);
-      document.getElementById("yorumMetni").value = "";
-    }
-  </script>
-
-</body>
-</html>
-```
-
----
-
-
-```html
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-  <meta charset="UTF-8" />
-  <title>TR HABER - Yorum Sistemi</title>
-  <style>
-    body {
-      background-color: #121212;
-      color: white;
-      font-family: Arial;
-      margin: 0;
-      padding: 0;
-      text-align: center;
-    }
-    .ust {
-      background-color: crimson;
-      padding: 15px;
-      font-size: 24px;
-      font-weight: bold;
-    }
-    .yorum-kutusu {
-      margin: 20px;
-    }
-    input, button {
-      padding: 10px;
-      margin: 5px;
-    }
-    .yorumlar {
-      margin-top: 20px;
-      max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
-      background-color: #1e1e1e;
-      padding: 10px;
-      border-radius: 8px;
-    }
-    .yorum {
-      background-color: #333;
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 5px;
-      text-align: left;
-    }
-  </style>
-</head>
-<body>
-
-  <div class="ust">TR HABER</div>
-
-  <div class="yorum-kutusu">
-    <input type="text" id="kullanici" placeholder="İsminiz (veya Misafir)">
-    <input type="text" id="yorum" placeholder="Yorumunuzu yazın">
-    <button onclick="yorumEkle()">Yorum Yap</button>
-  </div>
-
-  <div class="yorumlar" id="yorumlar">
-    <!-- Yorumlar buraya eklenecek -->
-  </div>
-
-  <script>
-    // localStorage'dan yorumları al
-    let yorumlar = JSON.parse(localStorage.getItem("yorumlar")) || [];
-
-    function yorumEkle() {
-      const kullanici = document.getElementById("kullanici").value || "Misafir";
-      const yorum = document.getElementById("yorum").value;
-
-      if (yorum.trim() === "") return;
-
-      yorumlar.push({ kullanici, yorum });
-      localStorage.setItem("yorumlar", JSON.stringify(yorumlar));
-      yorumlariGoster();
-      document.getElementById("yorum").value = "";
-    }
-
-    function yorumlariGoster() {
-      const container = document.getElementById("yorumlar");
-      container.innerHTML = "";
-      yorumlar.forEach((item) => {
-        const div = document.createElement("div");
-        div.className = "yorum";
-        div.innerText = item.kullanici:{item.yorum};
-        container.appendChild(div);
-      });
-    }
-
-    yorumlariGoster();
-  </script>
-
-</body>
-</html>
-```
-
----
-
-
-```html
-<!DOCTYPE html>
 <html lang="tr">
 <head>
 <meta charset="UTF-8" />
-<title>TR Haber</title>
+<title>TR HABER</title>
 <style>
-  body { background-color: #222; color: #eee; font-family: Arial; }
-  #comments { margin-top: 20px; }
-  .comment { background: #333; padding: 10px; margin-bottom: 10px; border-radius: 5px; }
+  body { background-color: #222; color: #eee; font-family: Arial, sans-serif; margin: 20px; }
+  #header { background: red; color: white; padding: 10px; font-weight: bold; font-size: 24px; }
+  #comments { margin-top: 20px; max-width: 600px; }
+  .comment { background: #333; padding: 10px; margin-bottom: 10px; border-radius: 5px; word-wrap: break-word; }
+  input, textarea { width: 100%; padding: 8px; margin: 5px 0; box-sizing: border-box; border-radius: 4px; border: none; }
+  button { padding: 10px 20px; background: red; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+  button:hover { background: darkred; }
 </style>
 </head>
 <body>
-  <h1>TR HABER</h1>
-  <input id="name" placeholder="Adınız" />
-  <textarea id="comment" placeholder="Yorumunuz"></textarea><br />
-  <button onclick="addComment()">Yorum Yap</button>
 
-  <div id="comments">
-    <h2>Yorumlar</h2>
-    <div id="commentList">Henüz yorum yok, sen ilk yorum yapan ol!</div>
-  </div>
+<div id="header">TR HABER</div>
+
+<input id="name" placeholder="Adınız (misafir isen 'Kullanıcı' yazabilirsiniz)" />
+<textarea id="comment" placeholder="Yorumunuzu buraya yazın"></textarea>
+<button onclick="addComment()">Yorum Yap</button>
+
+<div id="comments">
+  <h2>Yorumlar</h2>
+
+<div id="commentList">Henüz yorum yok, sen ilk yorum yapan ol!</div>
+</div>
 
 <script>
   function loadComments() {
     const comments = JSON.parse(localStorage.getItem('comments') || '[]');
     const commentList = document.getElementById('commentList');
-    if(comments.length === 0) {
-
-commentList.innerHTML = 'Henüz yorum yok, sen ilk yorum yapan ol!';
+    if(comments.length === 0) {
+      commentList.innerHTML = 'Henüz yorum yok, sen ilk yorum yapan ol!';
       return;
     }
     commentList.innerHTML = '';
@@ -266,26 +46,27 @@ commentList.innerHTML = 'Henüz yorum yok, sen ilk yorum yapan ol!';
   }
 
   function addComment() {
-    const name = document.getElementById('name').value.trim();
-    const text = document.getElementById('comment').value.trim();
-    if(!name || !text) {
-      alert('Lütfen isim ve yorum girin!');
+    const nameInput = document.getElementById('name');
+    const commentInput = document.getElementById('comment');
+    let name = nameInput.value.trim();
+    const text = commentInput.value.trim();
+    if(!name) name = 'Kullanıcı'; // misafir modu için isim
+    if(!text) {
+      alert('Lütfen yorum yazınız!');
       return;
     }
-
     const comments = JSON.parse(localStorage.getItem('comments') || '[]');
     comments.push({name, text});
     localStorage.setItem('comments', JSON.stringify(comments));
     loadComments();
 
-    // alanları temizle
-    document.getElementById('name').value = '';
-    document.getElementById('comment').value = '';
+    nameInput.value = '';
+    commentInput.value = '';
   }
 
-  // sayfa yüklendiğinde yorumları yükle
   window.onload = loadComments;
 </script>
+
 </body>
 </html>
 ```
