@@ -125,3 +125,100 @@ let yorumMetni = document.getElementById("yorumMetni").value.trim();
 ```
 
 ---
+
+
+```html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <title>TR HABER - Yorum Sistemi</title>
+  <style>
+    body {
+      background-color: #121212;
+      color: white;
+      font-family: Arial;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    .ust {
+      background-color: crimson;
+      padding: 15px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+    .yorum-kutusu {
+      margin: 20px;
+    }
+    input, button {
+      padding: 10px;
+      margin: 5px;
+    }
+    .yorumlar {
+      margin-top: 20px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      background-color: #1e1e1e;
+      padding: 10px;
+      border-radius: 8px;
+    }
+    .yorum {
+      background-color: #333;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="ust">TR HABER</div>
+
+  <div class="yorum-kutusu">
+    <input type="text" id="kullanici" placeholder="İsminiz (veya Misafir)">
+    <input type="text" id="yorum" placeholder="Yorumunuzu yazın">
+    <button onclick="yorumEkle()">Yorum Yap</button>
+  </div>
+
+  <div class="yorumlar" id="yorumlar">
+    <!-- Yorumlar buraya eklenecek -->
+  </div>
+
+  <script>
+    // localStorage'dan yorumları al
+    let yorumlar = JSON.parse(localStorage.getItem("yorumlar")) || [];
+
+    function yorumEkle() {
+      const kullanici = document.getElementById("kullanici").value || "Misafir";
+      const yorum = document.getElementById("yorum").value;
+
+      if (yorum.trim() === "") return;
+
+      yorumlar.push({ kullanici, yorum });
+      localStorage.setItem("yorumlar", JSON.stringify(yorumlar));
+      yorumlariGoster();
+      document.getElementById("yorum").value = "";
+    }
+
+    function yorumlariGoster() {
+      const container = document.getElementById("yorumlar");
+      container.innerHTML = "";
+      yorumlar.forEach((item) => {
+        const div = document.createElement("div");
+        div.className = "yorum";
+        div.innerText = item.kullanici:{item.yorum};
+        container.appendChild(div);
+      });
+    }
+
+    yorumlariGoster();
+  </script>
+
+</body>
+</html>
+```
+
+---
