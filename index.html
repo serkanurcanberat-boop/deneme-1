@@ -222,3 +222,70 @@ let yorumMetni = document.getElementById("yorumMetni").value.trim();
 ```
 
 ---
+
+
+```html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<title>TR Haber</title>
+<style>
+  body { background-color: #222; color: #eee; font-family: Arial; }
+  #comments { margin-top: 20px; }
+  .comment { background: #333; padding: 10px; margin-bottom: 10px; border-radius: 5px; }
+</style>
+</head>
+<body>
+  <h1>TR HABER</h1>
+  <input id="name" placeholder="Adınız" />
+  <textarea id="comment" placeholder="Yorumunuz"></textarea><br />
+  <button onclick="addComment()">Yorum Yap</button>
+
+  <div id="comments">
+    <h2>Yorumlar</h2>
+    <div id="commentList">Henüz yorum yok, sen ilk yorum yapan ol!</div>
+  </div>
+
+<script>
+  function loadComments() {
+    const comments = JSON.parse(localStorage.getItem('comments') || '[]');
+    const commentList = document.getElementById('commentList');
+    if(comments.length === 0) {
+
+commentList.innerHTML = 'Henüz yorum yok, sen ilk yorum yapan ol!';
+      return;
+    }
+    commentList.innerHTML = '';
+    comments.forEach(c => {
+      const div = document.createElement('div');
+      div.className = 'comment';
+      div.textContent = c.name + ': ' + c.text;
+      commentList.appendChild(div);
+    });
+  }
+
+  function addComment() {
+    const name = document.getElementById('name').value.trim();
+    const text = document.getElementById('comment').value.trim();
+    if(!name || !text) {
+      alert('Lütfen isim ve yorum girin!');
+      return;
+    }
+
+    const comments = JSON.parse(localStorage.getItem('comments') || '[]');
+    comments.push({name, text});
+    localStorage.setItem('comments', JSON.stringify(comments));
+    loadComments();
+
+    // alanları temizle
+    document.getElementById('name').value = '';
+    document.getElementById('comment').value = '';
+  }
+
+  // sayfa yüklendiğinde yorumları yükle
+  window.onload = loadComments;
+</script>
+</body>
+</html>
+```
